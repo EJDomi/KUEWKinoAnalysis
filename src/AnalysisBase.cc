@@ -235,6 +235,7 @@ int AnalysisBase<StopNtupleTree>::GetSampleIndex(){
       m_IndexToNevent[0]  = m_NeventTool.GetNevent_BKG(m_Label);
       m_IndexToNweight[0] = m_NeventTool.GetNweight_BKG(m_Label);
       m_Nsample++;
+      std::cout << "test a" << endl;
     }
     return 0;
   }
@@ -311,7 +312,13 @@ ParticleList AnalysisBase<StopNtupleTree>::GetJets(){
     if(mass < 0.)
       mass = 0.;
     jet.SetPtEtaPhiM( JET.Pt(), JET.Eta(), JET.Phi(), mass );
-    jet.SetBtag((*recoJetsBtag_0_LepCleaned)[i]);
+    double csvv2 = (*recoJetsBtag_0)[i];
+    int btag = 0;
+    if (csvv2 > 0.9525) btag = 3;
+    else if (csvv2 > 0.8484) btag = 2;
+    else if (csvv2 > 0.5426) btag = 1;
+   
+    jet.SetBtag(btag);
     // NOTE: ID is incomplete (all required variables not available)
     // bool loose = true;
     // bool tight = true;

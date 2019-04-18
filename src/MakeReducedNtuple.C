@@ -131,13 +131,13 @@ int main(int argc, char* argv[]) {
   ReducedNtuple* ntuple = new ReducedNtuple(chain);
   
   ntuple->AddLabel(string(FileTag));
-
   if(DO_SMS)
     ntuple->DoSMS();
-
   ntuple->WriteNtuple(string(outputFileName));
+  std::cout << "test b" << endl;
 
   delete ntuple;
+  std::cout << "test c" << endl;
  
   return 0;
 }

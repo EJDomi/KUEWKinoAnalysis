@@ -271,7 +271,8 @@ TTree* ReducedNtuple::InitOutputTree(const string& sample){
   tree->Branch("genPhi_susy", &m_genPhi_susy);
   tree->Branch("genM_susy",   &m_genM_susy);
   tree->Branch("genPDGID_susy", &m_genPDGID_susy);
-  
+ 
+ 
   // Calculated Observables
   for(int i = 0; i < 3; i++){
     m_Njet_a.push_back(0);
@@ -523,7 +524,7 @@ void ReducedNtuple::FillOutputTree(TTree* tree){
       int Nb = 0;
       for(int i = 0; i < m_Njet; i++){
 	// NOTE: fill in with correct discriminant
-	if(Jets[i].Btag() > 0.55){
+	if(Jets[i].Btag() > 0){
 	  jetID.push_back(COMB_PAIR[t]->AddLabFrameFourVector(Jets[i]));
 	  Nb++;
 	} else
@@ -579,13 +580,13 @@ void ReducedNtuple::FillOutputTree(TTree* tree){
 	if(COMB_PAIR[t]->GetFrame(jetID[i]) == *Va_PAIR[t]){
 	  m_Njet_a[t]++;
 	  // NOTE
-	  if(Jets[i].Btag() > 0.55)
+	  if(Jets[i].Btag() > 0)
 	    m_Nbjet_a[t]++;
 	  m_index_jet_a[t].push_back(i);
 	} else {
 	  m_Njet_b[t]++;
 	  // NOTE
-	  if(Jets[i].Btag() > 0.55)
+	  if(Jets[i].Btag() > 0)
 	    m_Nbjet_b[t]++;
 	  m_index_jet_b[t].push_back(i);
 	}
@@ -629,7 +630,7 @@ void ReducedNtuple::FillOutputTree(TTree* tree){
 	for(int i = 0; i < m_Njet; i++){
 	  m_Njet_ISR[t]++;
 	  // NOTE
-	  if(Jets[i].Btag() > 0.55)
+	  if(Jets[i].Btag() > 0)
 	    m_Nbjet_ISR[t]++;
 	  m_index_jet_ISR[t].push_back(i);
 	}
@@ -653,13 +654,13 @@ void ReducedNtuple::FillOutputTree(TTree* tree){
 	  if(COMB_ISR[t]->GetFrame(jetID[i]) == *ISR_ISR[t]){
 	    m_Njet_ISR[t]++;
 	    // NOTE
-	    if(Jets[i].Btag() > 0.55)
+	    if(Jets[i].Btag() > 0)
 	      m_Nbjet_ISR[t]++;
 	    m_index_jet_ISR[t].push_back(i);
 	  } else {
 	    m_Njet_S[t]++;
 	    // NOTE
-	    if(Jets[i].Btag() > 0.55)
+	    if(Jets[i].Btag() > 0)
 	      m_Nbjet_S[t]++;
 	    m_index_jet_S[t].push_back(i);
 	  }
@@ -685,13 +686,13 @@ void ReducedNtuple::FillOutputTree(TTree* tree){
 	  if(COMB_ISR[t]->GetFrame(jetID[i]) == *ISR_ISR[t]){
 	    m_Njet_ISR[t]++;
 	    // NOTE
-	    if(Jets[i].Btag() > 0.55)
+	    if(Jets[i].Btag() > 0)
 	      m_Nbjet_ISR[t]++;
 	    m_index_jet_ISR[t].push_back(i);
 	  } else {
 	    m_Njet_S[t]++;
 	    // NOTE
-	    if(Jets[i].Btag() > 0.55)
+	    if(Jets[i].Btag() > 0)
 	      m_Nbjet_S[t]++;
 	    m_index_jet_S[t].push_back(i);
 	  }
@@ -947,7 +948,7 @@ void ReducedNtuple::FillOutputTree(TTree* tree){
     m_M_jet.push_back(Jets[i].M());
     m_Btag_jet.push_back(Jets[i].Btag());
     // NOTE: placeholder - replace with actual discriminant
-    if(Jets[i].Btag() > 0.55)
+    if(Jets[i].Btag() > 0)
       m_Nbjet++;
   }
 
