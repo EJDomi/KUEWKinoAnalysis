@@ -142,10 +142,8 @@ int main(int argc, char* argv[]) {
   if(DO_SMS)
     ntuple->DoSMS();
   ntuple->WriteNtuple(string(outputFileName));
-  std::cout << "test b" << endl;
 
   delete ntuple;
-  std::cout << "test c" << endl;
  
   return 0;
 }
