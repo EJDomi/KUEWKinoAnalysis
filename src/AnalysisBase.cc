@@ -241,7 +241,6 @@ int AnalysisBase<StopNtupleTree>::GetSampleIndex(){
       m_IndexToNevent[0]  = m_NeventTool.GetNevent_BKG(m_DataSet, m_FileTag);
       m_IndexToNweight[0] = m_NeventTool.GetNweight_BKG(m_DataSet, m_FileTag);
       m_Nsample++;
-      std::cout << "test a" << endl;
     }
     return 0;
   }
