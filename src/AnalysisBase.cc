@@ -87,6 +87,11 @@ void AnalysisBase<Base>::AddBtagFolder(const string& btagfold){
 }
 
 template <class Base>
+void AnalysisBase<Base>::AddSVDiscrFile(const string& svfile){
+  m_SVDiscrTool.CreateNN(svfile);
+}
+
+template <class Base>
 void AnalysisBase<Base>::InitializeHistograms(vector<TH1D*>& histos){}
 
 template <class Base>
@@ -1483,23 +1488,34 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
       continue;
     if(fabs(SV_eta[i]) >= 2.4)
       continue;
-    if(SV_dlenSig[i] <= 4.)
-      continue;
-    if(SV_ndof[i] < 1.8) // replacement for ntracks cut...
-      continue;
+    //if(SV_dlenSig[i] <= 4.)
+    //  continue;
+    //if(SV_ndof[i] < 1.8) // replacement for ntracks cut...
+    //  continue;
 
     TVector3 xSV;
     xSV.SetXYZ(SV_x[i],SV_y[i],SV_z[i]);
     // dxy cut
-    if(fabs((xSV-PV).Pt()) >= 3.)
-      continue;
+    //if(fabs((xSV-PV).Pt()) >= 3.)
+    //  continue;
 
     Particle SV;
     SV.SetPtEtaPhiM(SV_pt[i],SV_eta[i],SV_phi[i],SV_mass[i]);
 
-    if((xSV-PV).Unit().Dot(SV.Vect().Unit()) <= 0.98)
-      continue;
-    
+    //if((xSV-PV).Unit().Dot(SV.Vect().Unit()) <= 0.98)
+    //  continue;
+   
+    SV.SetDxy(fabs((xSV-PV).Pt()));
+    SV.SetD3d(SV_dlen[i]);
+    SV.SetD3dSig(SV_dlenSig[i]);
+    SV.SetCosTheta((xSV-PV).Unit().Dot(SV.Vect().Unit()));
+    SV.SetNdof(SV_ndof[i]);
+
+    std::map<std::string, double> probs = m_SVDiscrTool.PROB(SV);
+
+    SV.SetProbB(probs["probb"]); 
+    SV.SetProbC(probs["probc"]); 
+
     // if(SB_pt[i] < 20. && SB_dlenSig[i] > 4. &&
     //    SB_dxy[i] < 3. && SB_DdotP[i] > 0.98 &&
     //    SB_ntracks[i] >= 3){

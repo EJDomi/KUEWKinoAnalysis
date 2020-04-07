@@ -84,6 +84,8 @@ private:
   vector<double> m_Eta_SV;
   vector<double> m_Phi_SV;
   vector<double> m_M_SV;
+  vector<double> m_ProbB_SV;
+  vector<double> m_ProbC_SV;
 
   int m_genNele;
   int m_genNmu;

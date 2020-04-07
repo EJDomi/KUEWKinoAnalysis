@@ -14,6 +14,7 @@
 #include "JSONTool.hh"
 #include "PUTool.hh"
 #include "BtagSFTool.hh"
+#include "SVDiscrTool.hh"
 
 #include "Particle.hh"
 
@@ -34,6 +35,7 @@ public:
   void AddJSONFile(const string& jsonfile);
   void AddPUFolder(const string& pufold);
   void AddBtagFolder(const string& btagfold);
+  void AddSVDiscrFile(const string& svfile);
   void DoSMS(){ m_DoSMS = true; }
   void DoData(){ m_IsData = true; }
 
@@ -97,6 +99,7 @@ private:
   JSONTool   m_JSONTool;
   PUTool     m_PUTool;
   BtagSFTool m_BtagSFTool;
+  SVDiscrTool m_SVDiscrTool;
 
   int m_SampleIndex;
   virtual int GetSampleIndex();

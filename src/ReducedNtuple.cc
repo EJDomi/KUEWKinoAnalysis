@@ -397,6 +397,8 @@ TTree* ReducedNtuple<Base>::InitOutputTree(const string& sample){
   tree->Branch("Eta_SV", &m_Eta_SV);
   tree->Branch("Phi_SV", &m_Phi_SV);
   tree->Branch("M_SV",   &m_M_SV);
+  tree->Branch("ProbB_SV",   &m_ProbB_SV);
+  tree->Branch("ProbC_SV",   &m_ProbC_SV);
  
   tree->Branch("genNele", &m_genNele);
   tree->Branch("genNmu", &m_genNmu);
@@ -1262,6 +1264,8 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree){
     m_Eta_SV.push_back(SVs[i].Eta());
     m_Phi_SV.push_back(SVs[i].Phi());
     m_M_SV.push_back(SVs[i].M());
+    m_ProbB_SV.push_back(SVs[i].ProbB());
+    m_ProbC_SV.push_back(SVs[i].ProbC());
   }
   
   ParticleList GenMuons = AnalysisBase<Base>::GetGenMuons();

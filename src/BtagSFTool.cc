@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include <algorithm>
 #include <TFile.h>
 #include <RooArgList.h>
 
@@ -138,7 +138,7 @@ void BtagSFTool::ParseCSV(const std::string& csvfile, int iyear){
   getline(ifile,line);
   while(getline(ifile,line)){
     //remove whitespace
-    line.erase(remove(line.begin(), line.end(), ' '), line.end());
+    line.erase(remove_if(line.begin(), line.end(), ::isspace), line.end());
 
     // first digit is WP - keeoing only medium (1) working point for now
     if(stoi(line.substr(0,1)) != 1)

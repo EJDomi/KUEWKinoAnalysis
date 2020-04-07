@@ -67,6 +67,7 @@ def write_sh(srcfile,ifile,ofile,lfile,dataset,filetag,i,n):
     fsrc.write('-json='+JSON+" ")
     fsrc.write('-pu='+PUFOLD+" ")
     fsrc.write('-btag='+BTAGFOLD+" ")
+    fsrc.write('-svfile='+SVFILE+" ")
     splitstring = '-split=%d,%d \n' % (i+1,n)
     fsrc.write(splitstring)
     fsrc.write('output = '+lfile+"_out.log \n")
@@ -178,7 +179,10 @@ if __name__ == "__main__":
     os.system("cp -r root/BtagSF "+config+".")
     os.system("cp -r csv/BtagSF/* "+config+"BtagSF/.")
     BTAGFOLD = config+"BtagSF/"
-    
+   
+    os.system("cat data/nano_train_model.json > "+config+"model.json")
+    SVFILE = config+"model.json"
+ 
     # output root files
     ROOT = OUT+"/"+NAME+"/"
     if ROOT == TARGET:
