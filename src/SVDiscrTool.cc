@@ -7,8 +7,8 @@
 void SVDiscrTool::CreateNN(const std::string& json_file_name){
 
     std::ifstream jsonfile(json_file_name);
-    auto config = lwt::parse_json(jsonfile);
 
+    auto config = lwt::parse_json(jsonfile);
     neural_network_ = std::make_unique<const lwt::LightweightNeuralNetwork>(config.inputs, config.layers, config.outputs);
 
 }
@@ -16,24 +16,27 @@ void SVDiscrTool::CreateNN(const std::string& json_file_name){
 
 std::map<std::string, double> SVDiscrTool::PROB(const Particle& SV){
 
-    lwt::ValueMap var_map{ 
+    lwt::ValueMap var_map; 
                      
-                      {"Evt_pt", SV.Pt()},
-                      {"Evt_eta", SV.Eta()},
-                      {"Evt_mass", SV.M()},
-                      {"Evt_d3d", SV.D3d()},
-                      {"Evt_d3dsig", SV.D3dSig()},
-                      {"Evt_dxy", SV.Dxy()},
-                      {"Evt_costhetaSvPv", SV.CosTheta()},
-                      {"Evt_ndof", SV.Ndof()},
-                     
-        };
+    var_map["Evt_pt"] = SV.Pt();
+    var_map["Evt_eta"] = SV.Eta();
+    var_map["Evt_mass"] = SV.M();
+    var_map["Evt_d3d"] = SV.D3d();
+    var_map["Evt_d3dsig"] = SV.D3dSig();
+    var_map["Evt_dxy"] = SV.Dxy();
+    var_map["Evt_costhetaSvPv"] = SV.CosTheta();
+    var_map["Evt_ndof"] = SV.Ndof();
 
-    lwt::ValueMap nnout = neural_network_->compute(var_map);
+    
+    auto nnout = neural_network_->compute(var_map);
 
     //std::map<std::string, double> prob_map = nnout->at("flavor");
+    std::map<std::string, double> prob_out;
+    for(const auto& out: nnout) {
+        prob_out[out.first] = out.second;
+    }
 
-    return nnout;
+    return prob_out;
 }
 
     

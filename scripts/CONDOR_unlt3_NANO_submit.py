@@ -16,7 +16,7 @@ OUT  = "/home/t3-ku/crogan/NTUPLES/Processing/"
 #OUT = pwd
 LIST = "default.list"
 QUEUE = ""
-MAXN = 10
+MAXN = 1
 SPLIT = 1
 
 def new_listfile(rootlist, listfile):

@@ -1507,14 +1507,16 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
    
     SV.SetDxy(fabs((xSV-PV).Pt()));
     SV.SetD3d(SV_dlen[i]);
-    SV.SetD3dSig(SV_dlenSig[i]);
+    SV.SetD3dSig(fabs(SV_dlenSig[i]));
+    //SV.SetCosTheta((xSV-PV).Unit().Dot(SV.Vect().Unit()));
     SV.SetCosTheta((xSV-PV).Unit().Dot(SV.Vect().Unit()));
     SV.SetNdof(SV_ndof[i]);
 
     std::map<std::string, double> probs = m_SVDiscrTool.PROB(SV);
 
-    SV.SetProbB(probs["probb"]); 
-    SV.SetProbC(probs["probc"]); 
+    
+    SV.SetProbB(probs["prob_isB"]); 
+    SV.SetProbC(probs["prob_isC"]); 
 
     // if(SB_pt[i] < 20. && SB_dlenSig[i] > 4. &&
     //    SB_dxy[i] < 3. && SB_DdotP[i] > 0.98 &&

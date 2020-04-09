@@ -13,15 +13,14 @@ CXXFLAGS       += $(filter-out -stdlib=libc++ -pthread , $(RFCFLAGS))
 GLIBS          = $(filter-out -stdlib=libc++ -pthread , $(ROOTGLIBS))
 GLIBS         += $(filter-out -stdlib=libc++ -pthread , $(RFGLIBS))
 GLIBS         += -lRooFit -lRooFitCore
-#GLIBS         += -L/home/t3-ku/erichjs/work/Ewkinos/sv_tag/discr_test_code/CMSSW_10_2_0/src/lwtnn/lib/
 GLIBS         += -L/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lwtnn/2.4-gnimlf3/lib
+GLIBS         += /cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lwtnn/2.4-gnimlf3/lib/liblwtnn.so
 
 #include "/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lwtnn/2.4-gnimlf3/include/"
 INCLUDEDIR       = ./include/
 SRCDIR           = ./src/
 CXX	         += -I$(INCLUDEDIR) -I.
 CXX              += -I/cvmfs/cms.cern.ch/slc7_amd64_gcc700/external/lwtnn/2.4-gnimlf3/include/
-#CXX              += -I/home/t3-ku/erichjs/work/Ewkinos/sv_tag/discr_test_code/CMSSW_10_2_0/src/lwtnn/include/
 OUTOBJ	         = ./obj/
 
 CC_FILES := $(wildcard src/*.cc)
