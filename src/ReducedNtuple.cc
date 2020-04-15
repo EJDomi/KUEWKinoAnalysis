@@ -1259,6 +1259,8 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree){
   m_Eta_SV.clear();
   m_Phi_SV.clear();
   m_M_SV.clear();
+  m_ProbB_SV.clear();
+  m_ProbC_SV.clear();
   for(int i = 0; i < m_NSV; i++){
     m_PT_SV.push_back(SVs[i].Pt());
     m_Eta_SV.push_back(SVs[i].Eta());

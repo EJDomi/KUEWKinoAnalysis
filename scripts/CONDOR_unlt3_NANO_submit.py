@@ -7,16 +7,16 @@ import os, sys, commands, time
 pwd = os.environ['PWD']
 home = os.environ['HOME']
 #######################################
-RUN_DIR = pwd
+RUN_DIR = pwd + "/test_new_out"
 TEMP = pwd
 EXE  = "MakeReducedNtuple_NANO.x"
 #EXE  = "MakeEventCount_NANO.x"
 TREE = "Events"
 OUT  = "/home/t3-ku/crogan/NTUPLES/Processing/"
-#OUT = pwd
+#OUT = pwd + "/test_new_out"
 LIST = "default.list"
 QUEUE = ""
-MAXN = 1
+MAXN = 5
 SPLIT = 1
 
 def new_listfile(rootlist, listfile):
