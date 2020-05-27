@@ -244,6 +244,10 @@ TVector3 AnalysisBase<Base>::GetPV(bool& good){
 }
 
 template <class Base>
+bool AnalysisBase<Base>::GetEMutrigger(){
+  return false;
+}
+template <class Base>
 bool AnalysisBase<Base>::GetMETtrigger(){
   return false;
 }
@@ -755,6 +759,35 @@ int AnalysisBase<SUSYNANOBase>::GetNPUtrue(){
   if(!IsData())
     return Pileup_nPU;
   
+  return 0;
+}
+
+template <>
+bool AnalysisBase<SUSYNANOBase>::GetEMutrigger(){
+  int year = 2016;
+  if(m_FileTag.find("17") != std::string::npos)
+    year = 2017;
+  if(m_FileTag.find("18") != std::string::npos)
+    year = 2018;
+
+  if(year == 2016)
+    return (HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL ||
+            HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL ||
+            HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ);
+  if(year == 2017)
+    return (HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL ||
+            HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ);
+  if(year == 2018)
+    return (HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL ||
+            HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ ||
+            HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ);
+
   return 0;
 }
 
@@ -1773,6 +1806,50 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
     SV.SetProbB(probs["prob_isB"]); 
     SV.SetProbC(probs["prob_isC"]); 
 
+    TLorentzVector svLVec;
+    svLVec.SetPtEtaPhiM(SV_pt[i], SV_eta[i], SV_phi[i], SV_mass[i]);
+
+    int nB(0), nC(0), nUDS(0), nG(0), nOther(0);
+    bool isbMeson = false; bool isbBaryon = false; 
+    bool iscMeson = false; bool iscBaryon = false;
+    bool issMeson = false; bool issBaryon = false;
+    bool isudMeson = false; bool isudBaryon = false;
+    int PDGID;
+
+    for(int j=0; j<nGenPart; j++){
+        TLorentzVector genLVec; 
+        genLVec.SetPtEtaPhiM(GenPart_pt[j], GenPart_eta[j], GenPart_phi[j], max(float(0.),GenPart_mass[j]));
+        PDGID = GenPart_pdgId[i];
+        if(svLVec.DeltaR(genLVec) <= 0.05){
+             
+            isbMeson = PDGID%1000 > 500 && PDGID%1000 < 600;
+            isbBaryon = PDGID > 5000 &&  PDGID < 6000;
+            
+            iscMeson = PDGID%1000 > 400 && PDGID%1000 < 500;
+            iscBaryon = PDGID > 4000 &&  PDGID < 5000;
+
+            issMeson = PDGID%1000 > 300 && PDGID%1000 < 400;
+            issBaryon = PDGID > 3000 &&  PDGID < 4000;
+ 
+            isudMeson = PDGID%1000 > 100 && PDGID%1000 < 300;
+            isudBaryon = PDGID > 1000 &&  PDGID < 3000;
+
+            if      (PDGID == 5 || isbMeson || isbBaryon){nB++;}
+            else if (PDGID == 4 || iscMeson || iscBaryon){nC++;}
+            else if (PDGID == 21){nG++;}
+            else if (PDGID == 3 || PDGID == 130 || issMeson || issBaryon){nUDS++;}
+            else if (PDGID == 2 || PDGID == 1 || isudMeson || isudBaryon){nUDS++;}
+            else {nOther++;}
+        }
+        else {nOther++;}
+    }
+    if (nB > 0) SV.SetFlavor(kB);
+    else if (nC > 0) SV.SetFlavor(kC);
+    else if (nG > 0) SV.SetFlavor(kG);
+    else if (nUDS > 0) SV.SetFlavor(kUDS);
+    else SV.SetFlavor(kOther);
+
+
     // if((xSV-PV).Unit().Dot(SV.Vect().Unit()) <= 0.98)
     //   continue;
     
@@ -1789,8 +1866,8 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
     // if(SV_ndof[i] < 1.8) // replacement for ntracks cut...
     //   continue;
 
-    if(probs["prob_isB"] > 0.35)
-      list.push_back(SV);
+    //if(probs["prob_isB"] > 0.35)
+    //  list.push_back(SV);
   }
   
   return list;

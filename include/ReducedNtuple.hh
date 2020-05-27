@@ -48,6 +48,7 @@ private:
 
   double m_HT;
 
+  bool m_EMutrigger;
   bool m_METtrigger;
   bool m_METHTtrigger;
   bool m_METORtrigger;
@@ -90,6 +91,12 @@ private:
   vector<double> m_Eta_SV;
   vector<double> m_Phi_SV;
   vector<double> m_M_SV;
+  vector<double> m_Dxy_SV;
+  vector<double> m_D3d_SV;
+  vector<double> m_D3dSig_SV;
+  vector<double> m_CosTheta_SV;
+  vector<double> m_Ndof_SV;
+  vector<int>    m_Flavor_SV;
 
   int m_genNele;
   int m_genNmu;

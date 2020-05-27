@@ -64,6 +64,7 @@ public:
   virtual int GetNPV();
   virtual int GetNPUtrue();
 
+  virtual bool GetEMutrigger();
   virtual bool GetMETtrigger();
   virtual bool GetMETHTtrigger();
   virtual bool GetMETORtrigger();

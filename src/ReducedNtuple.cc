@@ -345,6 +345,7 @@ TTree* ReducedNtuple<Base>::InitOutputTree(const string& sample){
 
   tree->Branch("NPV", &m_NPV);
 
+  tree->Branch("EMutrigger", &m_EMutrigger);
   tree->Branch("METtrigger", &m_METtrigger);
   tree->Branch("METHTtrigger", &m_METHTtrigger);
   tree->Branch("METORtrigger", &m_METORtrigger);
@@ -398,6 +399,11 @@ TTree* ReducedNtuple<Base>::InitOutputTree(const string& sample){
   tree->Branch("Eta_SV", &m_Eta_SV);
   tree->Branch("Phi_SV", &m_Phi_SV);
   tree->Branch("M_SV",   &m_M_SV);
+  tree->Branch("Dxy_SV",   &m_Dxy_SV);
+  tree->Branch("D3d_SV",   &m_D3d_SV);
+  tree->Branch("D3dSig_SV",   &m_D3dSig_SV);
+  tree->Branch("CosTheta_SV",   &m_CosTheta_SV);
+  tree->Branch("Ndof_SV",   &m_Ndof_SV);
   tree->Branch("ProbB_SV",   &m_ProbB_SV);
   tree->Branch("ProbC_SV",   &m_ProbC_SV);
 
@@ -728,8 +734,8 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree, const Systematic& sys){
   ParticleList Jets = AnalysisBase<Base>::GetJetsMET(ETMiss);
   Jets = Jets.PtEtaCut(20., 2.4);
 
-  if(ETMiss.Mag() < 175.)
-    return;
+  //if(ETMiss.Mag() < 175.)
+  //  return;
   
   ClearVariables();
 
@@ -745,10 +751,10 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree, const Systematic& sys){
   Leptons.SortByPt();
 
   ParticleList SVs = AnalysisBase<Base>::GetSVs(PV);
-  SVs = SVs.RemoveOverlap(Leptons, 0.2);
+  //SVs = SVs.RemoveOverlap(Leptons, 0.2);
   SVs = SVs.RemoveOverlap(Jets, 0.4);
   
-  Jets = Jets.RemoveOverlap(Leptons, 0.2);
+  //Jets = Jets.RemoveOverlap(Leptons, 0.2);
 
   // skip event reconstruction for now if too many jets
   if(Jets.size() >= 16){
@@ -1255,6 +1261,7 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree, const Systematic& sys){
   m_NPV = AnalysisBase<Base>::GetNPV();
 
   
+  m_EMutrigger   = AnalysisBase<Base>::GetEMutrigger();
   m_METtrigger   = AnalysisBase<Base>::GetMETtrigger();
   m_METHTtrigger = AnalysisBase<Base>::GetMETHTtrigger();
   m_METORtrigger = AnalysisBase<Base>::GetMETORtrigger();
@@ -1285,15 +1292,27 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree, const Systematic& sys){
   m_Eta_SV.clear();
   m_Phi_SV.clear();
   m_M_SV.clear();
+  m_Dxy_SV.clear();
+  m_D3d_SV.clear();
+  m_D3dSig_SV.clear();
+  m_CosTheta_SV.clear();
+  m_Ndof_SV.clear();
   m_ProbB_SV.clear();
   m_ProbC_SV.clear();
+  m_Flavor_SV.clear();
   for(int i = 0; i < m_NSV; i++){
     m_PT_SV.push_back(SVs[i].Pt());
     m_Eta_SV.push_back(SVs[i].Eta());
     m_Phi_SV.push_back(SVs[i].Phi());
     m_M_SV.push_back(SVs[i].M());
+    m_Dxy_SV.push_back(SVs[i].Dxy());
+    m_D3d_SV.push_back(SVs[i].D3d());
+    m_D3dSig_SV.push_back(SVs[i].D3dSig());
+    m_CosTheta_SV.push_back(SVs[i].CosTheta());
+    m_Ndof_SV.push_back(SVs[i].Ndof());
     m_ProbB_SV.push_back(SVs[i].ProbB());
     m_ProbC_SV.push_back(SVs[i].ProbC());
+    m_Flavor_SV.push_back(SVs[i].Flavor());
   }
   
   ParticleList GenMuons = AnalysisBase<Base>::GetGenMuons();

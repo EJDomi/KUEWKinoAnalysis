@@ -7,6 +7,8 @@ Particle::Particle() : TLorentzVector() {
   m_MomPDGID = 0;
   m_ParticleID = kNothing;
 
+  m_Flavor = kOther;
+
   m_RelIso = 0.;
   m_MiniIso = 0.;
   m_Dxy = 0.;
@@ -56,6 +58,14 @@ ParticleIDType Particle::ParticleID() const {
 
 void Particle::SetParticleID(ParticleIDType id){
   m_ParticleID = id;
+}
+
+int Particle::Flavor() const {
+  return m_Flavor;
+}
+
+void Particle::SetFlavor(ParticleFlavor flav){
+  m_Flavor = flav;
 }
 
 double Particle::BtagID() const {

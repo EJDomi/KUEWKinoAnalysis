@@ -7,6 +7,7 @@ class ParticleList;
 
 /// Particle ID level
 enum ParticleIDType { kNothing, kVeryLoose, kLoose, kMedium, kTight, kVeryTight };
+enum ParticleFlavor { kB, kC, kUDS, kG, kOther};
 
 class Particle : public TLorentzVector {
 public:
@@ -19,6 +20,9 @@ public:
 
   int PDGID() const;
   void SetPDGID(int pdgid);
+
+  int Flavor() const;
+  void SetFlavor(ParticleFlavor flav);
 
   int MomPDGID() const;
   void SetMomPDGID(int pdgid);
@@ -72,7 +76,9 @@ private:
   int m_PDGID;
   int m_MomPDGID;
   ParticleIDType m_ParticleID;
-  
+ 
+  ParticleFlavor m_Flavor;
+
   double m_Btag;
   ParticleIDType m_BtagID;
 
