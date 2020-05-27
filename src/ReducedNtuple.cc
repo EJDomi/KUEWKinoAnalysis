@@ -213,12 +213,8 @@ TTree* ReducedNtuple<Base>::InitOutputTree(const string& sample){
 
   tree->Branch("NPV", &m_NPV);
 
-<<<<<<< HEAD
   tree->Branch("EMutrigger", &m_EMutrigger);
-=======
   tree->Branch("EventFilter", &m_EventFilter);
-  
->>>>>>> 1d8561f2c7934113126024b86845775260e8e753
   tree->Branch("METtrigger", &m_METtrigger);
   tree->Branch("METHTtrigger", &m_METHTtrigger);
   tree->Branch("METORtrigger", &m_METORtrigger);
@@ -607,13 +603,8 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree, const Systematic& sys){
   ParticleList Jets = AnalysisBase<Base>::GetJetsMET(ETMiss);
   Jets = Jets.PtEtaCut(20., 2.4);
 
-<<<<<<< HEAD
   //if(ETMiss.Mag() < 175.)
   //  return;
-=======
-  if(ETMiss.Mag() < 150.)
-    return;
->>>>>>> 1d8561f2c7934113126024b86845775260e8e753
   
   ClearVariables();
 
@@ -963,11 +954,7 @@ void ReducedNtuple<Base>::FillOutputTree(TTree* tree, const Systematic& sys){
 
   m_NPV = AnalysisBase<Base>::GetNPV();
 
-<<<<<<< HEAD
-  
   m_EMutrigger   = AnalysisBase<Base>::GetEMutrigger();
-=======
->>>>>>> 1d8561f2c7934113126024b86845775260e8e753
   m_METtrigger   = AnalysisBase<Base>::GetMETtrigger();
   m_METHTtrigger = AnalysisBase<Base>::GetMETHTtrigger();
   m_METORtrigger = AnalysisBase<Base>::GetMETORtrigger();
