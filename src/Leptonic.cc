@@ -39,7 +39,7 @@ bool Lep::operator < (const Lep& lep) const {
   if(m_Charge < lep.Charge())
     return true;
   if(m_Charge > lep.Charge())
-    return true;
+    return false;
   
   if(m_Source < lep.Source())
     return true;
@@ -107,7 +107,6 @@ LepSource GetLepSource(int PDGID, int genPDGID, int momPDGID){
   if(abs(genPDGID) != 11 && abs(genPDGID) != 13){
     return kFake;
   } else if((abs(momPDGID) == abs(PDGID)) ||
-	    (abs(momPDGID) == 22) ||
 	    (abs(momPDGID) == 23) ||
 	    (abs(momPDGID) == 24) ||
 	    ((abs(momPDGID) > 1000000) &&
@@ -322,6 +321,7 @@ bool Leptonic::operator == (const Criteria& val) const {
       if(((*this)[i].GetHemA() == (*lep)[j].GetHemA()) &&
 	 ((*this)[i].GetHemB() == (*lep)[j].GetHemB()))
 	return true;
+  
   return false;
 }
 

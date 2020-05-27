@@ -11,10 +11,6 @@
 #include "Category.hh"
 #include "Systematics.hh"
 
-using std::map;
-using std::string;
-using std::vector;
-
 ///////////////////////////////////////////
 ////////// Process class
 ///////////////////////////////////////////
@@ -42,6 +38,8 @@ public:
   bool operator <  (const Process&) const;
   bool operator >  (const Process&) const;
   bool operator == (const Process&) const;
+
+  SM GetSM() const;
 
 private:
   string m_Title;
@@ -74,6 +72,10 @@ public:
   ProcessList Filter(const string& label) const;
   ProcessList Remove(ProcessType type) const;
   ProcessList Remove(const string& label) const;
+  ProcessList FilterOR(VS& labels) const;
+  ProcessList FilterAND(VS& labels) const;
+  ProcessList RemoveOR(VS& labels) const;
+  ProcessList RemoveAND(VS& labels) const;
 
   int Find(const string& label) const;
  

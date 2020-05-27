@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
 
-#include "../include/Process.hh"
+#include "Process.hh"
 
 ///////////////////////////////////////////
 ////////// Process class
@@ -82,6 +82,20 @@ bool Process::operator == (const Process& proc) const {
   return Name() == proc.Name();
 }
 
+SM Process::GetSM() const {
+  if(Type() != kSig)
+    return SM(Name());
+  
+  size_t l = Name().rfind("_");
+  if(l == std::string::npos)
+    return SM(Name());
+
+  SM sm(Name().substr(0, l));
+  sm += Name().substr(l+1,Name().length()-l);
+
+  return sm;
+}
+
 ///////////////////////////////////////////
 ////////// ProcessList class
 ///////////////////////////////////////////
@@ -97,10 +111,12 @@ ProcessList::ProcessList(const ProcessList& list){
 
 ProcessList::~ProcessList() {}
 
-ProcessList& ProcessList::operator =  (const ProcessList& list){
+ProcessList& ProcessList::operator = (const ProcessList& list){
+  ProcessList pl(list);
+  m_ProcMap.clear();
   m_Proc.clear();
   m_N = 0;
-  return *this += list;
+  return *this += pl;
 }
 
 ProcessList& ProcessList::operator += (const ProcessList& list){
@@ -122,7 +138,7 @@ ProcessList& ProcessList::operator += (const Process& proc){
   return *this;
 }
 
-ProcessList  ProcessList::operator +  (const ProcessList& list) const {
+ProcessList  ProcessList::operator + (const ProcessList& list) const {
   ProcessList ret = *this;
   ret += list;
 
@@ -162,9 +178,69 @@ ProcessList ProcessList::Remove(ProcessType type) const {
 ProcessList ProcessList::Remove(const string& label) const {
    ProcessList list;
 
+   for(int i = 0; i < m_N; i++)
+     if(m_Proc[i].Name().find(label) == std::string::npos)
+       list += m_Proc[i];
+   
+  return list;
+}
+
+ProcessList ProcessList::FilterOR(VS& labels) const {
+  ProcessList list;
+
   for(int i = 0; i < m_N; i++)
-    if(m_Proc[i].Name().find(label) == std::string::npos)
+    for(auto l : labels)
+      if(m_Proc[i].Name().find(l) != std::string::npos){
+	list += m_Proc[i];
+	break;
+      }
+
+  return list;
+}
+
+ProcessList ProcessList::FilterAND(VS& labels) const {
+  ProcessList list;
+
+  for(int i = 0; i < m_N; i++){
+    bool match = true;
+    for(auto l : labels)
+      if(m_Proc[i].Name().find(l) == std::string::npos){
+	match = false;
+	break;
+      }
+    if(match)
       list += m_Proc[i];
+  }
+
+  return list;
+}
+
+ProcessList ProcessList::RemoveOR(VS& labels) const {
+  ProcessList list;
+
+  for(int i = 0; i < m_N; i++){
+    bool match = false;
+    for(auto l : labels)
+      if(m_Proc[i].Name().find(l) != std::string::npos){
+	match = true;
+	break;
+      }
+    if(!match)
+      list += m_Proc[i];
+  }
+
+  return list;  
+}
+
+ProcessList ProcessList::RemoveAND(VS& labels) const {
+  ProcessList list;
+
+  for(int i = 0; i < m_N; i++)
+    for(auto l : labels)
+      if(m_Proc[i].Name().find(l) == std::string::npos){
+	list += m_Proc[i];
+	break;
+      }
 
   return list;
 }
@@ -247,8 +323,8 @@ void ProcessBranch::FillProcess(Process& proc, TFile& file){
   m_ProcType = proc.Type();
   
   // make histogram output directories for this process
-  file.cd();
-  file.mkdir(proc.Name().c_str());
+  //file.cd();
+  //file.mkdir(proc.Name().c_str());
   
   // loop through all subprocesses (systematics)
   auto p = proc.m_ProcBins.begin();
@@ -259,7 +335,13 @@ void ProcessBranch::FillProcess(Process& proc, TFile& file){
     auto c = p->second.begin();
     while(c != p->second.end()){
       // write FitBin to output file for each subprocess/category
-      c->second->WriteHistogram(m_SubProc+"_"+c->first, m_Proc, file);
+      file.cd();
+      if(!file.cd(c->first.c_str()))
+	file.mkdir(c->first.c_str());
+      file.cd();
+	 
+      //c->second->WriteHistogram(m_SubProc+"_"+c->first, m_Proc, file);
+      c->second->WriteHistogram(m_SubProc, c->first, file);
       // clean up this bin (assuming we won't need it after writing...)
       c->second->Clear();
       

@@ -8,6 +8,7 @@
 #include <TTree.h>
 #include <iostream>
 #include <vector>
+#include <TGraphErrors.h>
 
 #include "Category.hh"
 #include "Process.hh"
@@ -22,7 +23,9 @@ using std::pair;
 
 class FitReader {
 public:
-  FitReader(const string& inputfile);
+  FitReader(const string& inputfile,
+	    const string& otherfile = "",
+	    const string& otherfold = "");
 
   virtual ~FitReader();
 
@@ -37,19 +40,28 @@ public:
 			   const Process&    proc,
 			   const Systematic& sys = Systematic::Default()) const;
 
-  TCanvas* Plot1Dstack(const vector<string>& proc,
-		       const vector<string>& lep_cat,
-		       const vector<string>& hadS_cat,
-		       const vector<string>& hadI_cat,
-		       const string& canvas);
+  double Integral(const Category&   cat,
+		  const Process&    proc,
+		  const Systematic& sys = Systematic::Default()) const;
+
+  bool HasSystematic(const Process& proc, const Systematic& sys) const;
   
-  const ProcessList&    GetProcesses() const;
-  const CategoryList&   GetCategories(const string& channel = "") const;
-  vector<string>        GetChannels() const;           
-  const Systematics&    GetSystematics() const;
+  TCanvas* Plot1Dstack(const VS& proc,
+		       const VS& lep_cat,
+		       const VS& hadS_cat,
+		       const VS& hadI_cat,
+		       const string& canvas);
+
+  VS GetChannels() const;  
+  const ProcessList&  GetProcesses() const;
+  const CategoryList& GetCategories(const string& channel = "") const;         
+  const Systematics&  GetSystematics() const;
   
 private:
-  mutable TFile m_File;
+  mutable TFile  m_File;
+  
+  mutable TFile* m_FilePtr;
+  string         m_FileFold;
 
   mutable map<Process,Systematics> m_ProcSys;
   mutable map<Process,map<Category,TH1D*> > m_ProcHist;
@@ -69,11 +81,11 @@ private:
   map<string,string>          m_Title;
   map<string,int>             m_Color;
   vector<int>                 m_ColorDefault;
-  map<string,vector<string> > m_Strings;
-  vector<string>              m_Sig;
-  map<string,string>          m_SignalTitle;
+  map<string,VS> m_Strings;
   void InitializeRecipes();
   string GetSignalTitle(const string& label);
+
+  TGraphErrors* GetTotalBackground(const CategoryList& cat);
   
 };
 
