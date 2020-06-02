@@ -68,7 +68,7 @@ void Particle::SetFlavor(ParticleFlavor flav){
   m_Flavor = flav;
 }
 
-double Particle::BtagID() const {
+ParticleIDType Particle::BtagID() const {
   return m_BtagID;
 }
 
@@ -194,6 +194,18 @@ double Particle::Btag() const {
 
 void Particle::SetBtag(double btag){
   m_Btag = btag;
+}
+
+Particle Particle::Merge(const Particle& p) const {
+  Particle part = *this;
+  if(p.Btag() > part.Btag())
+    part.SetBtag(p.Btag());
+  if(p.BtagID() > part.BtagID())
+    part.SetBtagID(p.BtagID());
+  
+  part += p;
+
+  return part;
 }
 
 Particle::operator ParticleList() const {
