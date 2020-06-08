@@ -1782,8 +1782,8 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
       continue;
     if(SV_pt[i] >= 20.)
       continue;
-    if(fabs(SV_eta[i]) >= 2.4)
-      continue;
+    //if(fabs(SV_eta[i]) >= 2.4)
+    //  continue;
 
     TVector3 xSV;
     xSV.SetXYZ(SV_x[i],SV_y[i],SV_z[i]);
@@ -1810,6 +1810,8 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
     bool iscMeson = false; bool iscBaryon = false;
     bool issMeson = false; bool issBaryon = false;
     bool isudMeson = false; bool isudBaryon = false;
+
+    if(!(IsData())){
     int PDGID;
 
     for(int j=0; j<nGenPart; j++){
@@ -1817,7 +1819,6 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
         genLVec.SetPtEtaPhiM(GenPart_pt[j], GenPart_eta[j], GenPart_phi[j], max(float(0.),GenPart_mass[j]));
         PDGID = GenPart_pdgId[i];
         if(svLVec.DeltaR(genLVec) <= 0.05){
-             
             isbMeson = PDGID%1000 > 500 && PDGID%1000 < 600;
             isbBaryon = PDGID > 5000 &&  PDGID < 6000;
             
@@ -1839,12 +1840,13 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
         }
         else {nOther++;}
     }
+    }
     if (nB > 0) SV.SetFlavor(kB);
     else if (nC > 0) SV.SetFlavor(kC);
     else if (nG > 0) SV.SetFlavor(kG);
     else if (nUDS > 0) SV.SetFlavor(kUDS);
     else SV.SetFlavor(kOther);
-
+    
 
     // if((xSV-PV).Unit().Dot(SV.Vect().Unit()) <= 0.98)
     //   continue;
@@ -1863,7 +1865,7 @@ ParticleList AnalysisBase<SUSYNANOBase>::GetSVs(const TVector3& PV){
     //   continue;
 
     //if(probs["prob_isB"] > 0.35)
-    //  list.push_back(SV);
+    list.push_back(SV);
   }
   
   return list;

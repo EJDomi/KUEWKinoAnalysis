@@ -12,11 +12,12 @@ TEMP = pwd
 EXE  = "MakeReducedNtuple_NANO.x"
 #EXE  = "MakeEventCount_NANO.x"
 TREE = "Events"
-OUT  = "/home/t3-ku/crogan/NTUPLES/Processing/"
-#OUT = pwd
+#OUT  = "/home/t3-ku/crogan/NTUPLES/Processing/"
+#OUT = "/mnt/hadoop/user/uscms01/pnfs/unl.edu/data4/cms/store/user/eschmitz/EWKino/Processing"
+OUT =  "/mnt/hadoop/user/uscms01/pnfs/unl.edu/data4/cms/store/user/eschmitz/EWKino/Processing"
 LIST = "default.list"
 QUEUE = ""
-MAXN = 10
+MAXN = 5
 SPLIT = 1
 
 def new_listfile(rootlist, listfile):
@@ -54,7 +55,7 @@ def write_sh(srcfile,ifile,ofile,lfile,dataset,filetag,i,n):
     fsrc.write('use_x509userproxy = true \n')
     fsrc.write('Arguments = ');
     fsrc.write('-ilist='+ifile+" ")
-    fsrc.write('-ofile='+ofile+" ")
+    fsrc.write('-ofile='+ofile.split('/')[-1]+" ")
     fsrc.write('-tree='+TREE+" ")
     if DO_SMS == 1:
         fsrc.write('--sms ')
@@ -69,13 +70,17 @@ def write_sh(srcfile,ifile,ofile,lfile,dataset,filetag,i,n):
     fsrc.write('-btag='+BTAGFOLD+" ")
     fsrc.write('-jme='+JMEFOLD+" ")
     fsrc.write('-svfile='+SVFILE+" ")
-    splitstring = '-split=%d,%d \n' % (i+1,n)
+    splitstring = '-split=%d,%d \n' % (i+1, n)
     fsrc.write(splitstring)
     fsrc.write('output = '+lfile+"_out.log \n")
     fsrc.write('error = '+lfile+"_err.log \n")
     fsrc.write('log = '+lfile+"_log.log \n")
     fsrc.write('Requirements = (Machine != "red-node000.unl.edu")\n')
     fsrc.write('request_memory = 4 GB \n')
+    fsrc.write('should_transfer_files = YES\n')
+    fsrc.write('when_to_transfer_output = ON_EXIT\n')
+    fsrc.write('transfer_output_files = '+ofile.split('/')[-1]+'\n')
+    fsrc.write('transfer_output_remaps = "'+ofile.split('/')[-1]+' = '+ofile+'"\n')
     fsrc.write('queue \n')
     #fsrc.write('cd '+RUN_DIR+" \n")
     #fsrc.write('source ../RestFrames/setup_RestFrames.sh \n')
